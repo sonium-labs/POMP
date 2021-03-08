@@ -1,0 +1,3 @@
+include ':app:phoni'
+include ':app'
+rootProject.name = "POMP"
