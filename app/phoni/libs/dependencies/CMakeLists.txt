@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
+project(phoni)
 include(FetchContent)
 
 # SDSL
@@ -74,21 +75,21 @@ endif()
 
 
 
-## Add r-index
-FetchContent_Declare(
-        r-index
-        GIT_REPOSITORY https://github.com/maxrossi91/r-index.git
-)
-
-FetchContent_GetProperties(r-index)
-if(NOT r-index_POPULATED)
-    FetchContent_Populate(r-index)
-
-    add_subdirectory(${r-index_SOURCE_DIR} ${r-index_BINARY_DIR} )#EXCLUDE_FROM_ALL)
-    add_library(ri INTERFACE)
-    target_link_libraries(ri INTERFACE klib z sdsl divsufsort divsufsort64)
-    target_include_directories(ri INTERFACE ${r-index_SOURCE_DIR}/internal ${CMAKE_CURRENT_SOURCE_DIR}/include/)
-endif()
+### Add r-index
+#FetchContent_Declare(
+#    r-index
+#    GIT_REPOSITORY https://github.com/maxrossi91/r-index.git
+#)
+#
+#FetchContent_GetProperties(r-index)
+#if(NOT r-index_POPULATED)
+#    FetchContent_Populate(r-index)
+#
+#    add_subdirectory(${r-index_SOURCE_DIR} ${r-index_BINARY_DIR} )#EXCLUDE_FROM_ALL)
+#    add_library(ri INTERFACE)
+#    target_link_libraries(ri INTERFACE klib z sdsl divsufsort divsufsort64)
+#    target_include_directories(ri INTERFACE ${r-index_SOURCE_DIR}/internal ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+#endif()
 
 include_directories(../include)
 #set (CMAKE_EXE_LINKER_FLAGS "-I ${CMAKE_CURRENT_SOURCE_DIR}/include -L ${CMAKE_CURRENT_SOURCE_DIR}/lib")
