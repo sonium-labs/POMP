@@ -30,28 +30,20 @@ if(NOT bigbwt_POPULATED)
   endif()
 
 # check for SDSL
-### FIXME: THIS FIND LIBRARY ISNT FINDING OUR STATIC SDSL LIB
 find_library(SDSL_LIB
         NAMES libsdsl.a
-        PATH ${CMAKE_CURRENT_SOURCE_DIR}/sdsl/lib)
+        PATH ${CMAKE_SDSL_LIB_DIR}/lib)
 if (NOT SDSL_LIB)
-    message("sdsl-lite not found, building as external content")
-    find_library(DSS divsufsort HINTS "${CMAKE_SDSL_LIB_DIR}")
-    find_library(DSS64 divsufsort64 HINTS "${CMAKE_SDSL_LIB_DIR}")
-    message("sdsl: " ${SDSL_LIB})
-    message("divsufsort: " ${DSS})
-    message("divsufsort64: " ${DSS64})
-
-
+    message("sdsl-lite not found")
 else()
     message("sdsl-lite FOUND")
     message(SDSL_LIB)
-    include_directories(${CMAKE_SDSL_LIB_DIR}/include/)
     find_library(DSS divsufsort)
     find_library(DSS64 divsufsort64)
     message("sdsl: " ${SDSL_LIB})
     message("divsufsort: " ${DSS})
     message("divsufsort64: " ${DSS64})
+
 endif()
 
 ## Add klib
