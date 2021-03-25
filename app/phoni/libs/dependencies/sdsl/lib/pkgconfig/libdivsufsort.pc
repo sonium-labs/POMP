@@ -1,7 +1,7 @@
-prefix=/Users/madisonfileman/Desktop/spring/senior_proj/Test123/app/sdsl/outputs
+prefix=/Users/madisonfileman/Desktop/spring/senior_proj/POMP/app/phoni/libs/dependencies/sdsl
 exec_prefix=${prefix}
-libdir=/Users/madisonfileman/Desktop/spring/senior_proj/Test123/app/sdsl/outputs/lib
-includedir=/Users/madisonfileman/Desktop/spring/senior_proj/Test123/app/sdsl/outputs/include
+libdir=/Users/madisonfileman/Desktop/spring/senior_proj/POMP/app/phoni/libs/dependencies/sdsl/lib
+includedir=/Users/madisonfileman/Desktop/spring/senior_proj/POMP/app/phoni/libs/dependencies/sdsl/include
 
 Name: libdivsufsort
 Description: A lightweight suffix sorting library

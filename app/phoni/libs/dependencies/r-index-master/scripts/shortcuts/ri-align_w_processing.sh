@@ -1,1 +1,0 @@
-../ri-align_w_processing.sh

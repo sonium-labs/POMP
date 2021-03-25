@@ -2,5 +2,6 @@ set(MS_SOURCES  ms_rle_string.hpp
 ms_pointers.hpp)
 
 add_library(ms OBJECT ${MS_SOURCES})
+set_target_properties(ms PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(ms common sdsl)
 target_include_directories(ms PUBLIC "${r-index_SOURCE_DIR}/internal")

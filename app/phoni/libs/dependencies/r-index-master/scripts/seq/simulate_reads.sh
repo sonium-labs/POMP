@@ -1,1 +1,0 @@
-../simulate_reads.sh
