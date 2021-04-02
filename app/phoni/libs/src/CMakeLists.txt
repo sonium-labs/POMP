@@ -7,14 +7,9 @@ cmake_minimum_required(VERSION 3.18)
 #add_executable(rlbwt rlbwt.cpp)
 #target_link_libraries(rlbwt common sdsl malloc_count)
 #
-FetchContent_GetProperties(r-index)
-FetchContent_GetProperties(shaped_slp)
 
 
 #FetchContent_GetProperties(ssw)
-#
-set(FOLCA_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/folca)
-set(SUX_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/external/sux/sux)
 #
 #
 #add_executable(ms matching_statistics.cpp)
@@ -39,13 +34,15 @@ set(SUX_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/external/sux/sux)
 #                                        )
 #target_compile_options(rlems PUBLIC "-std=c++17")
 #
-#
+##
+set(shaped_slp_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/ShapedSlp/)
+set(FOLCA_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/folca)
+set(SUX_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/external/sux/sux)
+
 add_executable(phoni phoni.cpp)
 target_link_libraries(phoni common sdsl divsufsort divsufsort64 malloc_count ri)
 target_include_directories(phoni PUBLIC    "../include/ms"
                                         "../include/common"
-#                                        "../dependencies/sdsl/include"
-#                                        "${r-index_SOURCE_DIR}/../klib-src/"
                                         "${shaped_slp_SOURCE_DIR}"
                                         "${FOLCA_SOURCE_DIR}"
                                         "${SUX_SOURCE_DIR}/function"

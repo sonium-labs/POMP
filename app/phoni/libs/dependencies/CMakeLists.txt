@@ -58,7 +58,19 @@ if(NOT malloc_count_POPULATED)
     target_include_directories(memprofile PUBLIC "${malloc_count_SOURCE_DIR}")
 endif()
 
+## Add klib
+FetchContent_Declare(
+        klib
+        GIT_REPOSITORY https://github.com/attractivechaos/klib
+)
 
+FetchContent_GetProperties(klib)
+if(NOT klib_POPULATED)
+    FetchContent_Populate(klib)
+    # add_subdirectory(${klib_SOURCE_DIR} ${klib_BINARY_DIR} EXCLUDE_FROM_ALL)
+    add_library(klib INTERFACE)
+    target_include_directories(klib INTERFACE ${klib_SOURCE_DIR})
+endif()
 
 ## Add r-index
 FetchContent_Declare(
@@ -75,24 +87,5 @@ if(NOT r-index_POPULATED)
     target_include_directories(ri INTERFACE ${r-index_SOURCE_DIR}/internal ${r-index_SOURCE_DIR}/../klib-src/ ${CMAKE_CURRENT_SOURCE_DIR}../include/ ${CMAKE_SDSL_LIB_DIR}/include/)
 endif()
 
-#
-#SET(CMAKE_RINDEX_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/r-index-master/)
-#add_library(ri INTERFACE)
-##target_link_libraries(ri INTERFACE klib z sdsl divsufsort divsufsort64)
-#target_include_directories(ri INTERFACE ${CMAKE_RINDEX_LIB_DIR}/internal ${CMAKE_CURRENT_SOURCE_DIR}../include/)
-
-## Add ShapedSlp
-FetchContent_Declare(
-        shaped_slp
-        GIT_REPOSITORY https://github.com/koeppl/ShapedSlp
-        GIT_TAG master
-)
-
-FetchContent_GetProperties(shaped_slp)
-if(NOT shaped_slp_POPULATED)
-    FetchContent_Populate(shaped_slp)
-    #    add_subdirectory(${shaped_slp_SOURCE_DIR} ${shaped_slp_BINARY_DIR})
-    add_library(shaped_slp INTERFACE)
-    target_link_libraries(shaped_slp INTERFACE sdsl divsufsort divsufsort64)
-    target_include_directories(shaped_slp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}../include/ ${CMAKE_SDSL_LIB_DIR}/include/)
-endif()
+## add shaped slp
+add_subdirectory(ShapedSlp)
