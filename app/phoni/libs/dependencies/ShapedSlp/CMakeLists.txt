@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
-
 ### use a compiler supporting constexpr math
 # set(CMAKE_C_COMPILER "/usr/local/lib/gcc-9.1.0/bin/gcc" CACHE STRING "gcc compiler" FORCE)
 # set(CMAKE_CXX_COMPILER "/usr/local/lib/gcc-9.1.0/bin/g++" CACHE STRING "g++ compiler" FORCE)
@@ -33,6 +32,7 @@ include_directories(${SUX_SOURCE_DIR}/support)
 
 ### check for SDSL
 find_library(SDSL_LIB libsdsl.a
+        NAMES sdsl libsdsl libsdsl.a
         PATH ${CMAKE_SDSL_LIB_DIR}/lib
         HINTS ${CMAKE_SDSL_LIB_DIR}/lib)
 if (NOT SDSL_LIB)
@@ -83,8 +83,27 @@ else()
   message("divsufsort64: " ${DSS64})
 endif()
 
-message("Building in ${CMAKE_BUILD_TYPE} mode")
 
+# Add constexpr math
+  FetchContent_Declare(
+    gcem
+    GIT_REPOSITORY https://github.com/kthohr/gcem
+  )
+
+  FetchContent_GetProperties(gcem)
+  if(NOT gcem_POPULATED)
+    FetchContent_Populate(gcem)
+#    add_subdirectory(${gcem_SOURCE_DIR} ${gcem_BINARY_DIR} EXCLUDE_FROM_ALL)
+#    target_include_directories(gcem INTERFACE "${gcem_BINARY_DIR}/include")
+    add_library(gcem INTERFACE)
+    target_include_directories(gcem INTERFACE ${gcem_SOURCE_DIR}/include )
+
+  endif()
+
+include_directories(${gcem_SOURCE_DIR}/include)
+
+message("Building in ${CMAKE_BUILD_TYPE} mode")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-Winvalid-constexpr")
 # set(CMAKE_CXX_FLAGS "--std=c++2a /opt/local/lib/libstdc++.6.dylib")
 # set(CMAKE_CXX_FLAGS "--std=c++2a")
 
@@ -101,7 +120,6 @@ TARGET_LINK_LIBRARIES(SubstrBenchmark sdsl)
 
 add_executable(Decompress Decompress.cpp ${FOLCA_SOURCE_DIR}/fbtree.cpp ${FOLCA_SOURCE_DIR}/onlinebp.c)
 TARGET_LINK_LIBRARIES(Decompress sdsl)
-
 
 add_executable(LceBenchmark LceBenchmark.cpp ${FOLCA_SOURCE_DIR}/fbtree.cpp ${FOLCA_SOURCE_DIR}/onlinebp.c)
 TARGET_LINK_LIBRARIES(LceBenchmark sdsl)

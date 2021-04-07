@@ -38,11 +38,16 @@ cmake_minimum_required(VERSION 3.18)
 set(shaped_slp_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/ShapedSlp/)
 set(FOLCA_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/folca)
 set(SUX_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/external/sux/sux)
+set(SUX_SOURCE_DIR ${shaped_slp_SOURCE_DIR}/external/sux/sux)
+
+FetchContent_GetProperties(gcem)
+set(GCEM_SOURCE_DIR ${gcem_SOURCE_DIR}/include)
 
 add_executable(phoni phoni.cpp)
-target_link_libraries(phoni common sdsl divsufsort divsufsort64 malloc_count ri)
+target_link_libraries(phoni common sdsl divsufsort divsufsort64 malloc_count ri) #common
 target_include_directories(phoni PUBLIC    "../include/ms"
                                         "../include/common"
+                                        "${GCEM_SOURCE_DIR}"
                                         "${shaped_slp_SOURCE_DIR}"
                                         "${FOLCA_SOURCE_DIR}"
                                         "${SUX_SOURCE_DIR}/function"

@@ -34,7 +34,7 @@
 #include <cstring>
 #include <inttypes.h>
 #include <memory>
-#include <x86intrin.h>
+//#include <x86intrin.h>
 
 // Macro stringification
 #define __STRINGIFY(s) #s

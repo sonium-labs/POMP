@@ -32,10 +32,12 @@
 #include "../util/Vector.hpp"
 #include "DoubleEF.hpp"
 #include "RiceBitVector.hpp"
+#include "gcem.hpp"
+//#include "../../../gcem/include/gcem.hpp"
 #include <array>
 #include <cassert>
 #include <chrono>
-#include <cmath>
+//#include <cmath>
 #include <string>
 #include <vector>
 
@@ -154,9 +156,9 @@ template <size_t LEAF_SIZE> class SplittingStrategy {
 
   public:
 	/** The lower bound for primary (lower) key aggregation. */
-	static constexpr size_t lower_aggr = _leaf * max(2, ceil(0.35 * _leaf + 1. / 2));
+	static constexpr size_t lower_aggr = _leaf * gcem::max(2, gcem::ceil(0.35 * _leaf + 1. / 2));
 	/** The lower bound for secondary (upper) key aggregation. */
-	static constexpr size_t upper_aggr = lower_aggr * (_leaf < 7 ? 2 : ceil(0.21 * _leaf + 9. / 10));
+	static constexpr size_t upper_aggr = lower_aggr * (_leaf < 7 ? 2 : gcem::ceil(0.21 * _leaf + 9. / 10));
 
 	static inline constexpr void split_params(const size_t m, size_t &fanout, size_t &unit) {
 		if (m > upper_aggr) { // High-level aggregation (fanout 2)
@@ -225,10 +227,10 @@ template <size_t LEAF_SIZE> static constexpr void _fill_golomb_rice(const int m,
 	}
 
 	double sqrt_prod = 1;
-	for (size_t i = 0; i < fanout; ++i) sqrt_prod *= sqrt(k[i]);
+	for (size_t i = 0; i < fanout; ++i) sqrt_prod *= gcem::sqrt(k[i]);
 
-	const double p = sqrt(m) / (pow(2 * M_PI, (fanout - 1.) / 2) * sqrt_prod);
-	auto golomb_rice_length = (uint32_t)ceil(log2(-log((sqrt(5) + 1) / 2) / log1p(-p))); // log2 Golomb modulus
+	const double p = gcem::sqrt(m) / (gcem::pow(2 * M_PI, (fanout - 1.) / 2) * sqrt_prod);
+	auto golomb_rice_length = (uint32_t)gcem::ceil(gcem::log2(-gcem::log((gcem::sqrt(5) + 1) / 2) / gcem::log1p(-p))); // log2 Golomb modulus
 
 	assert(golomb_rice_length <= 0x1F); // Golomb-Rice code, stored in the 5 upper bits
 	(*memo)[m] = golomb_rice_length << 27;
@@ -268,15 +270,14 @@ template <size_t LEAF_SIZE> static constexpr uint64_t split_golomb_b(const int m
 	for (size_t i = 0; i < fanout; ++i) sqrt_prod *= sqrt(k[i]);
 
 	const double p = sqrt(m) / (pow(2 * M_PI, (fanout - 1.) / 2) * sqrt_prod);
-	return ceil(-log(2 - p) / log1p(-p)); // Golomb modulus
+	return gcem::ceil(-gcem::log(2 - p) / gcem::log1p(-p)); // Golomb modulus
 }
 
 // Computes the point at which one should stop to test whether
 // bijection extraction failed (around the square root of the leaf size).
-
 static constexpr array<uint8_t, MAX_LEAF_SIZE> fill_bij_midstop() {
 	array<uint8_t, MAX_LEAF_SIZE> memo{0};
-	for (int s = 0; s < MAX_LEAF_SIZE; ++s) memo[s] = s < (int)ceil(2 * sqrt(s)) ? s : (int)ceil(2 * sqrt(s));
+	for (int s = 0; s < MAX_LEAF_SIZE; ++s) memo[s] = s < (int)gcem::ceil(2 * gcem::sqrt(s)) ? s : (int)gcem::ceil(2 * gcem::sqrt(s));
 	return memo;
 }
 
@@ -305,7 +306,7 @@ template <size_t LEAF_SIZE, util::AllocType AT = util::AllocType::MALLOC> class 
 
 	// For each bucket size, the Golomb-Rice parameter (upper 8 bits) and the number of bits to
 	// skip in the fixed part of the tree (lower 24 bits).
-	static constexpr array<uint32_t, MAX_BUCKET_SIZE> memo = fill_golomb_rice<LEAF_SIZE>();
+	static /*constexpr*/ inline array<uint32_t, MAX_BUCKET_SIZE> memo = fill_golomb_rice<LEAF_SIZE>();
 	static constexpr array<uint8_t, MAX_LEAF_SIZE> bij_midstop = fill_bij_midstop();
 
 	size_t bucket_size;
@@ -705,7 +706,7 @@ template <size_t LEAF_SIZE, util::AllocType AT = util::AllocType::MALLOC> class 
 			bucket_pos_acc[i + 1] = builder.getBits();
 #ifdef MORESTATS
 			auto upper_leaves = (s + _leaf - 1) / _leaf;
-			auto upper_height = ceil(log(upper_leaves) / log(2)); // TODO: check
+			auto upper_height = gcem::ceil(log(upper_leaves) / log(2)); // TODO: check
 			auto upper_s = _leaf * pow(2, upper_height);
 			ub_split_bits += (double)upper_s / (_leaf * 2) * log2(2 * M_PI * _leaf) - .5 * log2(2 * M_PI * upper_s);
 			ub_bij_bits += upper_leaves * _leaf * (log2e - .5 / _leaf * log2(2 * M_PI * _leaf));
